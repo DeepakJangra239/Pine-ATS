@@ -1,0 +1,1293 @@
+Script(
+  body=[
+    Expr(
+      value=Call(
+        func=Name(id='strategy', ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value='Yuluxe Pro Strategy - Precise Investment')),
+          Arg(
+            value=Constant(value='Yuluxe Pro'),
+            name='shorttitle'),
+          Arg(
+            value=Constant(value=True),
+            name='overlay'),
+          Arg(
+            value=Attribute(
+              value=Name(id='strategy', ctx=Load()),
+              attr='cash',
+              ctx=Load()),
+            name='default_qty_type'),
+          Arg(
+            value=Constant(value=1000),
+            name='default_qty_value')])),
+    Assign(
+      target=Name(id='initialCapital', ctx=Store()),
+      value=Constant(value=5000),
+      annotations=[]),
+    Assign(
+      target=Name(id='tradeAmount', ctx=Store()),
+      value=Constant(value=1000),
+      annotations=[]),
+    Assign(
+      target=Name(id='maxInvestableAmount', ctx=Store()),
+      value=Constant(value=5000),
+      annotations=[]),
+    Assign(
+      target=Name(id='Smoothingsrc', ctx=Store()),
+      value=Call(
+        func=Name(id='input', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='close', ctx=Load())),
+          Arg(
+            value=Constant(value='Source'),
+            name='title'),
+          Arg(
+            value=Constant(value='ALMA Smoothing'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='smooth', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='int',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=1)),
+          Arg(
+            value=Constant(value='Smoothing'),
+            name='title'),
+          Arg(
+            value=Constant(value=1),
+            name='minval'),
+          Arg(
+            value=Constant(value='ALMA Smoothing'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='length1', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='int',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=25)),
+          Arg(
+            value=Constant(value='Lookback'),
+            name='title'),
+          Arg(
+            value=Constant(value=1),
+            name='minval'),
+          Arg(
+            value=Constant(value='ALMA Smoothing'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='offset', ctx=Store()),
+      value=Constant(value=0.85),
+      annotations=[]),
+    Assign(
+      target=Name(id='sigma1', ctx=Store()),
+      value=Constant(value=7),
+      annotations=[]),
+    Assign(
+      target=Name(id='pchange', ctx=Store()),
+      value=BinOp(
+        left=BinOp(
+          left=Call(
+            func=Attribute(
+              value=Name(id='ta', ctx=Load()),
+              attr='change',
+              ctx=Load()),
+            args=[
+              Arg(
+                value=Name(id='Smoothingsrc', ctx=Load())),
+              Arg(
+                value=Name(id='smooth', ctx=Load()))]),
+          op=Div(),
+          right=Name(id='Smoothingsrc', ctx=Load())),
+        op=Mult(),
+        right=Constant(value=100)),
+      annotations=[]),
+    Assign(
+      target=Name(id='avpchange', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='alma',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='pchange', ctx=Load())),
+          Arg(
+            value=Name(id='length1', ctx=Load())),
+          Arg(
+            value=Name(id='offset', ctx=Load())),
+          Arg(
+            value=Name(id='sigma1', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='rsi', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='rsi',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='close', ctx=Load())),
+          Arg(
+            value=Constant(value=14))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='rsiL', ctx=Store()),
+      value=Compare(
+        left=Name(id='rsi', ctx=Load()),
+        ops=[
+          Gt()],
+        comparators=[
+          Subscript(
+            value=Name(id='rsi', ctx=Load()),
+            slice=Constant(value=1),
+            ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='rsiS', ctx=Store()),
+      value=Compare(
+        left=Name(id='rsi', ctx=Load()),
+        ops=[
+          Lt()],
+        comparators=[
+          Subscript(
+            value=Name(id='rsi', ctx=Load()),
+            slice=Constant(value=1),
+            ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='length11', ctx=Store()),
+      value=Constant(value=9),
+      annotations=[]),
+    Assign(
+      target=Name(id='src1', ctx=Store()),
+      value=Name(id='close', ctx=Load()),
+      annotations=[]),
+    Assign(
+      target=Name(id='momm', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='change',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='src1', ctx=Load()))]),
+      annotations=[]),
+    FunctionDef(
+      name='f1',
+      args=[
+        Param(name='m')],
+      body=[
+        Expr(
+          value=Conditional(
+            test=Compare(
+              left=Name(id='m', ctx=Load()),
+              ops=[
+                GtE()],
+              comparators=[
+                Constant(value=0.0)]),
+            body=Name(id='m', ctx=Load()),
+            orelse=Constant(value=0.0)))],
+      method=0,
+      export=0,
+      annotations=[]),
+    FunctionDef(
+      name='f2',
+      args=[
+        Param(name='m')],
+      body=[
+        Expr(
+          value=Conditional(
+            test=Compare(
+              left=Name(id='m', ctx=Load()),
+              ops=[
+                GtE()],
+              comparators=[
+                Constant(value=0.0)]),
+            body=Constant(value=0.0),
+            orelse=UnaryOp(
+              op=USub(),
+              operand=Name(id='m', ctx=Load()))))],
+      method=0,
+      export=0,
+      annotations=[]),
+    Assign(
+      target=Name(id='m1', ctx=Store()),
+      value=Call(
+        func=Name(id='f1', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='momm', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='m2', ctx=Store()),
+      value=Call(
+        func=Name(id='f2', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='momm', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='sm1', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='math', ctx=Load()),
+          attr='sum',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='m1', ctx=Load())),
+          Arg(
+            value=Name(id='length11', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='sm2', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='math', ctx=Load()),
+          attr='sum',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='m2', ctx=Load())),
+          Arg(
+            value=Name(id='length11', ctx=Load()))]),
+      annotations=[]),
+    FunctionDef(
+      name='percent',
+      args=[
+        Param(name='nom'),
+        Param(name='div')],
+      body=[
+        Expr(
+          value=BinOp(
+            left=BinOp(
+              left=Constant(value=100),
+              op=Mult(),
+              right=Name(id='nom', ctx=Load())),
+            op=Div(),
+            right=Name(id='div', ctx=Load())))],
+      method=0,
+      export=0,
+      annotations=[]),
+    Assign(
+      target=Name(id='chandeMO', ctx=Store()),
+      value=Call(
+        func=Name(id='percent', ctx=Load()),
+        args=[
+          Arg(
+            value=BinOp(
+              left=Name(id='sm1', ctx=Load()),
+              op=Sub(),
+              right=Name(id='sm2', ctx=Load()))),
+          Arg(
+            value=BinOp(
+              left=Name(id='sm1', ctx=Load()),
+              op=Add(),
+              right=Name(id='sm2', ctx=Load())))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='cL', ctx=Store()),
+      value=Compare(
+        left=Name(id='chandeMO', ctx=Load()),
+        ops=[
+          Gt()],
+        comparators=[
+          Subscript(
+            value=Name(id='chandeMO', ctx=Load()),
+            slice=Constant(value=1),
+            ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='cS', ctx=Store()),
+      value=Compare(
+        left=Name(id='chandeMO', ctx=Load()),
+        ops=[
+          Lt()],
+        comparators=[
+          Subscript(
+            value=Name(id='chandeMO', ctx=Load()),
+            slice=Constant(value=1),
+            ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='length', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='int',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=14)),
+          Arg(
+            value=Constant(value=1),
+            name='minval'),
+          Arg(
+            value=Constant(value='Length'),
+            name='title'),
+          Arg(
+            value=Constant(value='Gaussian Adaptive Moving Average'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='adaptive', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='bool',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=True)),
+          Arg(
+            value=Constant(value='Adaptive Parameters'),
+            name='title'),
+          Arg(
+            value=Constant(value='Gaussian Adaptive Moving Average'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='volatilityPeriod', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='int',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=20)),
+          Arg(
+            value=Constant(value=1),
+            name='minval'),
+          Arg(
+            value=Constant(value='Volatility Period'),
+            name='title'),
+          Arg(
+            value=Constant(value='Gaussian Adaptive Moving Average'),
+            name='group')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='gma', ctx=Store()),
+      value=Constant(value=0.0),
+      annotations=[]),
+    Assign(
+      target=Name(id='sumOfWeights', ctx=Store()),
+      value=Constant(value=0.0),
+      annotations=[]),
+    Assign(
+      target=Name(id='sigma', ctx=Store()),
+      value=Conditional(
+        test=Name(id='adaptive', ctx=Load()),
+        body=Call(
+          func=Attribute(
+            value=Name(id='ta', ctx=Load()),
+            attr='stdev',
+            ctx=Load()),
+          args=[
+            Arg(
+              value=Name(id='close', ctx=Load())),
+            Arg(
+              value=Name(id='volatilityPeriod', ctx=Load()))]),
+        orelse=Call(
+          func=Attribute(
+            value=Name(id='input', ctx=Load()),
+            attr='float',
+            ctx=Load()),
+          args=[
+            Arg(
+              value=Constant(value=1.0)),
+            Arg(
+              value=Constant(value=0.1),
+              name='minval'),
+            Arg(
+              value=Constant(value='Standard Deviation'),
+              name='title'),
+            Arg(
+              value=Constant(value='Gaussian Adaptive Moving Average'),
+              name='group')])),
+      annotations=[]),
+    Expr(
+      value=ForTo(
+        target=Name(id='i', ctx=Store()),
+        start=Constant(value=0),
+        end=BinOp(
+          left=Name(id='length', ctx=Load()),
+          op=Sub(),
+          right=Constant(value=1)),
+        body=[
+          Assign(
+            target=Name(id='weight', ctx=Store()),
+            value=Call(
+              func=Attribute(
+                value=Name(id='math', ctx=Load()),
+                attr='exp',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=BinOp(
+                    left=UnaryOp(
+                      op=USub(),
+                      operand=Call(
+                        func=Attribute(
+                          value=Name(id='math', ctx=Load()),
+                          attr='pow',
+                          ctx=Load()),
+                        args=[
+                          Arg(
+                            value=BinOp(
+                              left=BinOp(
+                                left=Name(id='i', ctx=Load()),
+                                op=Sub(),
+                                right=BinOp(
+                                  left=Name(id='length', ctx=Load()),
+                                  op=Sub(),
+                                  right=Constant(value=1))),
+                              op=Div(),
+                              right=BinOp(
+                                left=Constant(value=2),
+                                op=Mult(),
+                                right=Name(id='sigma', ctx=Load())))),
+                          Arg(
+                            value=Constant(value=2))])),
+                    op=Div(),
+                    right=Constant(value=2)))]),
+            annotations=[]),
+          Assign(
+            target=Name(id='value', ctx=Store()),
+            value=BinOp(
+              left=Call(
+                func=Attribute(
+                  value=Name(id='ta', ctx=Load()),
+                  attr='highest',
+                  ctx=Load()),
+                args=[
+                  Arg(
+                    value=Name(id='avpchange', ctx=Load())),
+                  Arg(
+                    value=BinOp(
+                      left=Name(id='i', ctx=Load()),
+                      op=Add(),
+                      right=Constant(value=1)))]),
+              op=Add(),
+              right=Call(
+                func=Attribute(
+                  value=Name(id='ta', ctx=Load()),
+                  attr='lowest',
+                  ctx=Load()),
+                args=[
+                  Arg(
+                    value=Name(id='avpchange', ctx=Load())),
+                  Arg(
+                    value=BinOp(
+                      left=Name(id='i', ctx=Load()),
+                      op=Add(),
+                      right=Constant(value=1)))])),
+            annotations=[]),
+          ReAssign(
+            target=Name(id='gma', ctx=Store()),
+            value=BinOp(
+              left=Name(id='gma', ctx=Load()),
+              op=Add(),
+              right=BinOp(
+                left=Name(id='value', ctx=Load()),
+                op=Mult(),
+                right=Name(id='weight', ctx=Load())))),
+          ReAssign(
+            target=Name(id='sumOfWeights', ctx=Store()),
+            value=BinOp(
+              left=Name(id='sumOfWeights', ctx=Load()),
+              op=Add(),
+              right=Name(id='weight', ctx=Load())))])),
+    ReAssign(
+      target=Name(id='gma', ctx=Store()),
+      value=BinOp(
+        left=BinOp(
+          left=Name(id='gma', ctx=Load()),
+          op=Div(),
+          right=Name(id='sumOfWeights', ctx=Load())),
+        op=Div(),
+        right=Constant(value=2))),
+    ReAssign(
+      target=Name(id='gma', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='ema',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='gma', ctx=Load())),
+          Arg(
+            value=Constant(value=7))])),
+    Assign(
+      target=Name(id='gmaColor', ctx=Store()),
+      value=Conditional(
+        test=Compare(
+          left=Name(id='avpchange', ctx=Load()),
+          ops=[
+            GtE()],
+          comparators=[
+            Name(id='gma', ctx=Load())]),
+        body=Call(
+          func=Attribute(
+            value=Name(id='color', ctx=Load()),
+            attr='rgb',
+            ctx=Load()),
+          args=[
+            Arg(
+              value=Constant(value=0)),
+            Arg(
+              value=Constant(value=161)),
+            Arg(
+              value=Constant(value=5))]),
+        orelse=Call(
+          func=Attribute(
+            value=Name(id='color', ctx=Load()),
+            attr='rgb',
+            ctx=Load()),
+          args=[
+            Arg(
+              value=Constant(value=215)),
+            Arg(
+              value=Constant(value=0)),
+            Arg(
+              value=Constant(value=0))])),
+      annotations=[]),
+    Assign(
+      target=Name(id='currentSignal', ctx=Store()),
+      value=Constant(value=0),
+      type=Name(id='int', ctx=Load()),
+      mode=Var(),
+      annotations=[]),
+    ReAssign(
+      target=Name(id='currentSignal', ctx=Store()),
+      value=Conditional(
+        test=Compare(
+          left=Name(id='avpchange', ctx=Load()),
+          ops=[
+            GtE()],
+          comparators=[
+            Name(id='gma', ctx=Load())]),
+        body=Constant(value=1),
+        orelse=UnaryOp(
+          op=USub(),
+          operand=Constant(value=1)))),
+    Assign(
+      target=Name(id='barColor', ctx=Store()),
+      value=Name(id='na', ctx=Load()),
+      type=Name(id='color', ctx=Load()),
+      mode=Var(),
+      annotations=[]),
+    Expr(
+      value=If(
+        test=Compare(
+          left=Name(id='currentSignal', ctx=Load()),
+          ops=[
+            Eq()],
+          comparators=[
+            Constant(value=1)]),
+        body=[
+          ReAssign(
+            target=Name(id='barColor', ctx=Store()),
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='rgb',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Constant(value=0)),
+                Arg(
+                  value=Constant(value=186)),
+                Arg(
+                  value=Constant(value=6))]))],
+        orelse=[
+          Expr(
+            value=If(
+              test=Compare(
+                left=Name(id='currentSignal', ctx=Load()),
+                ops=[
+                  Eq()],
+                comparators=[
+                  UnaryOp(
+                    op=USub(),
+                    operand=Constant(value=1))]),
+              body=[
+                ReAssign(
+                  target=Name(id='barColor', ctx=Store()),
+                  value=Call(
+                    func=Attribute(
+                      value=Name(id='color', ctx=Load()),
+                      attr='rgb',
+                      ctx=Load()),
+                    args=[
+                      Arg(
+                        value=Constant(value=176)),
+                      Arg(
+                        value=Constant(value=0)),
+                      Arg(
+                        value=Constant(value=0))]))],
+              orelse=[]))])),
+    Expr(
+      value=Call(
+        func=Name(id='barcolor', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='barColor', ctx=Load()))])),
+    Expr(
+      value=Call(
+        func=Name(id='plotcandle', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='open', ctx=Load())),
+          Arg(
+            value=Name(id='high', ctx=Load())),
+          Arg(
+            value=Name(id='low', ctx=Load())),
+          Arg(
+            value=Name(id='close', ctx=Load())),
+          Arg(
+            value=Constant(value='Bar Color')),
+          Arg(
+            value=Name(id='barColor', ctx=Load())),
+          Arg(
+            value=Name(id='barColor', ctx=Load())),
+          Arg(
+            value=Name(id='barColor', ctx=Load()),
+            name='bordercolor')])),
+    Assign(
+      target=Name(id='ema', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='ema',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='close', ctx=Load())),
+          Arg(
+            value=Constant(value=7))]),
+      annotations=[]),
+    Expr(
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='ema', ctx=Load())),
+          Arg(
+            value=Name(id='gmaColor', ctx=Load()),
+            name='color'),
+          Arg(
+            value=Constant(value=3),
+            name='linewidth'),
+          Arg(
+            value=Constant(value='Gaussian Moving Average'),
+            name='title')])),
+    Assign(
+      target=Name(id='buyCondition', ctx=Store()),
+      value=BoolOp(
+        op=And(),
+        values=[
+          Call(
+            func=Attribute(
+              value=Name(id='ta', ctx=Load()),
+              attr='crossover',
+              ctx=Load()),
+            args=[
+              Arg(
+                value=Name(id='avpchange', ctx=Load())),
+              Arg(
+                value=Name(id='gma', ctx=Load()))]),
+          Attribute(
+            value=Name(id='barstate', ctx=Load()),
+            attr='isconfirmed',
+            ctx=Load()),
+          Name(id='rsiL', ctx=Load()),
+          Name(id='cL', ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='sellCondition', ctx=Store()),
+      value=BoolOp(
+        op=And(),
+        values=[
+          Call(
+            func=Attribute(
+              value=Name(id='ta', ctx=Load()),
+              attr='crossunder',
+              ctx=Load()),
+            args=[
+              Arg(
+                value=Name(id='avpchange', ctx=Load())),
+              Arg(
+                value=Name(id='gma', ctx=Load()))]),
+          Attribute(
+            value=Name(id='barstate', ctx=Load()),
+            attr='isconfirmed',
+            ctx=Load()),
+          Name(id='rsiS', ctx=Load()),
+          Name(id='cS', ctx=Load())]),
+      annotations=[]),
+    Assign(
+      target=Name(id='totalInvested', ctx=Store()),
+      value=Constant(value=0),
+      type=Name(id='float', ctx=Load()),
+      mode=Var(),
+      annotations=[]),
+    Expr(
+      value=If(
+        test=BoolOp(
+          op=And(),
+          values=[
+            Name(id='buyCondition', ctx=Load()),
+            Compare(
+              left=Attribute(
+                value=Name(id='strategy', ctx=Load()),
+                attr='equity',
+                ctx=Load()),
+              ops=[
+                GtE()],
+              comparators=[
+                Name(id='tradeAmount', ctx=Load())])]),
+        body=[
+          Assign(
+            target=Name(id='tradeQty', ctx=Store()),
+            value=Call(
+              func=Attribute(
+                value=Name(id='math', ctx=Load()),
+                attr='floor',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=BinOp(
+                    left=Name(id='tradeAmount', ctx=Load()),
+                    op=Div(),
+                    right=Name(id='close', ctx=Load())))]),
+            annotations=[]),
+          Expr(
+            value=Call(
+              func=Attribute(
+                value=Name(id='strategy', ctx=Load()),
+                attr='entry',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Constant(value='Buy')),
+                Arg(
+                  value=Attribute(
+                    value=Name(id='strategy', ctx=Load()),
+                    attr='long',
+                    ctx=Load())),
+                Arg(
+                  value=Name(id='tradeQty', ctx=Load()),
+                  name='qty')])),
+          AugAssign(
+            target=Name(id='totalInvested', ctx=Store()),
+            op=Add(),
+            value=Name(id='tradeAmount', ctx=Load()))],
+        orelse=[])),
+    Expr(
+      value=If(
+        test=BoolOp(
+          op=And(),
+          values=[
+            Name(id='sellCondition', ctx=Load()),
+            Compare(
+              left=Attribute(
+                value=Name(id='strategy', ctx=Load()),
+                attr='position_size',
+                ctx=Load()),
+              ops=[
+                Gt()],
+              comparators=[
+                Constant(value=0)])]),
+        body=[
+          Expr(
+            value=Call(
+              func=Attribute(
+                value=Name(id='strategy', ctx=Load()),
+                attr='close',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Constant(value='Buy'))])),
+          AugAssign(
+            target=Name(id='totalInvested', ctx=Store()),
+            op=Sub(),
+            value=Name(id='tradeAmount', ctx=Load()))],
+        orelse=[])),
+    Assign(
+      target=Name(id='lnt', ctx=Store()),
+      value=Call(
+        func=Name(id='input', ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=200)),
+          Arg(
+            value=Constant(value='Length'))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='lnt2', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='int',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=10)),
+          Arg(
+            value=Constant(value='Smooth')),
+          Arg(
+            value=Constant(value=1),
+            name='minval')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='lnt3', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='float',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value=1.0)),
+          Arg(
+            value=Constant(value='Zone Width')),
+          Arg(
+            value=Constant(value=0.5),
+            name='minval'),
+          Arg(
+            value=Constant(value=3),
+            name='maxval'),
+          Arg(
+            value=Constant(value=0.25),
+            name='step')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='downcol', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='color',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value='#e91e63', kind='#')),
+          Arg(
+            value=Constant(value='Premium color'))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='upcol', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='input', ctx=Load()),
+          attr='color',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Constant(value='#2962ff', kind='#')),
+          Arg(
+            value=Constant(value='Discount color'))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='atrs', ctx=Store()),
+      value=BinOp(
+        left=Call(
+          func=Attribute(
+            value=Name(id='ta', ctx=Load()),
+            attr='sma',
+            ctx=Load()),
+          args=[
+            Arg(
+              value=Call(
+                func=Attribute(
+                  value=Name(id='ta', ctx=Load()),
+                  attr='atr',
+                  ctx=Load()),
+                args=[
+                  Arg(
+                    value=Name(id='lnt', ctx=Load()))])),
+            Arg(
+              value=Name(id='lnt', ctx=Load()))]),
+        op=Mult(),
+        right=Name(id='lnt3', ctx=Load())),
+      annotations=[]),
+    Assign(
+      target=Name(id='max', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='highest',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='high', ctx=Load())),
+          Arg(
+            value=Name(id='lnt', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='min', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='lowest',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='low', ctx=Load())),
+          Arg(
+            value=Name(id='lnt', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Tuple(
+        elts=[
+          Name(id='middle', ctx=Store()),
+          Name(id='upper', ctx=Store()),
+          Name(id='lower', ctx=Store())],
+        ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='bb',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='close', ctx=Load())),
+          Arg(
+            value=Name(id='lnt', ctx=Load())),
+          Arg(
+            value=Constant(value=2))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='upfirst', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='sma',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='math', ctx=Load()),
+                attr='avg',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='max', ctx=Load())),
+                Arg(
+                  value=Name(id='upper', ctx=Load()))])),
+          Arg(
+            value=Name(id='lnt2', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='downfirst', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='ta', ctx=Load()),
+          attr='sma',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='math', ctx=Load()),
+                attr='avg',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='min', ctx=Load())),
+                Arg(
+                  value=Name(id='lower', ctx=Load()))])),
+          Arg(
+            value=Name(id='lnt2', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='upsecond', ctx=Store()),
+      value=BinOp(
+        left=Name(id='upfirst', ctx=Load()),
+        op=Add(),
+        right=Name(id='atrs', ctx=Load())),
+      annotations=[]),
+    Assign(
+      target=Name(id='downsecond', ctx=Store()),
+      value=BinOp(
+        left=Name(id='downfirst', ctx=Load()),
+        op=Sub(),
+        right=Name(id='atrs', ctx=Load())),
+      annotations=[]),
+    Assign(
+      target=Name(id='average', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='math', ctx=Load()),
+          attr='avg',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='upfirst', ctx=Load())),
+          Arg(
+            value=Name(id='downfirst', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='math', ctx=Load()),
+                attr='avg',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='max', ctx=Load())),
+                Arg(
+                  value=Name(id='min', ctx=Load()))]))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='upavg', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='math', ctx=Load()),
+          attr='avg',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='average', ctx=Load())),
+          Arg(
+            value=Name(id='upfirst', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='downavg', ctx=Store()),
+      value=Call(
+        func=Attribute(
+          value=Name(id='math', ctx=Load()),
+          attr='avg',
+          ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='average', ctx=Load())),
+          Arg(
+            value=Name(id='downfirst', ctx=Load()))]),
+      annotations=[]),
+    Assign(
+      target=Name(id='p1', ctx=Store()),
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='upfirst', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='downcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=100))]),
+            name='color'),
+          Arg(
+            value=Constant(value=False),
+            name='editable')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='p2', ctx=Store()),
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='upsecond', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='downcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=0))]),
+            name='color'),
+          Arg(
+            value=Constant(value='Roof'),
+            name='title')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='p3', ctx=Store()),
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='downfirst', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='upcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=100))]),
+            name='color'),
+          Arg(
+            value=Constant(value=False),
+            name='editable')]),
+      annotations=[]),
+    Assign(
+      target=Name(id='p4', ctx=Store()),
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='downsecond', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='upcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=0))]),
+            name='color'),
+          Arg(
+            value=Constant(value='Floor'),
+            name='title')]),
+      annotations=[]),
+    Expr(
+      value=Call(
+        func=Name(id='fill', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='p1', ctx=Load())),
+          Arg(
+            value=Name(id='p2', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='downcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=85))]),
+            name='color'),
+          Arg(
+            value=Constant(value='Roof fill'),
+            name='title')])),
+    Expr(
+      value=Call(
+        func=Name(id='fill', ctx=Load()),
+        args=[
+          Arg(
+            value=Name(id='p3', ctx=Load())),
+          Arg(
+            value=Name(id='p4', ctx=Load())),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='upcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=85))]),
+            name='color'),
+          Arg(
+            value=Constant(value='Floor fill'),
+            name='title')])),
+    Expr(
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Conditional(
+              test=Compare(
+                left=Name(id='close', ctx=Load()),
+                ops=[
+                  Gt()],
+                comparators=[
+                  Name(id='middle', ctx=Load())]),
+              body=Name(id='upavg', ctx=Load()),
+              orelse=Name(id='na', ctx=Load()))),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='downcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=25))]),
+            name='color'),
+          Arg(
+            value=Attribute(
+              value=Name(id='plot', ctx=Load()),
+              attr='style_linebr',
+              ctx=Load()),
+            name='style'),
+          Arg(
+            value=Constant(value='Second Roof'),
+            name='title')])),
+    Expr(
+      value=Call(
+        func=Name(id='plot', ctx=Load()),
+        args=[
+          Arg(
+            value=Conditional(
+              test=Compare(
+                left=Name(id='close', ctx=Load()),
+                ops=[
+                  Lt()],
+                comparators=[
+                  Name(id='middle', ctx=Load())]),
+              body=Name(id='downavg', ctx=Load()),
+              orelse=Name(id='na', ctx=Load()))),
+          Arg(
+            value=Call(
+              func=Attribute(
+                value=Name(id='color', ctx=Load()),
+                attr='new',
+                ctx=Load()),
+              args=[
+                Arg(
+                  value=Name(id='upcol', ctx=Load())),
+                Arg(
+                  value=Constant(value=25))]),
+            name='color'),
+          Arg(
+            value=Attribute(
+              value=Name(id='plot', ctx=Load()),
+              attr='style_linebr',
+              ctx=Load()),
+            name='style'),
+          Arg(
+            value=Constant(value='Second Floor'),
+            name='title')]))],
+  annotations=[
+    '//@version=5'])
